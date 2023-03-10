@@ -56,6 +56,8 @@ Add your node endpoints under [/prometheus/prometheus.yaml](https://github.com/L
 1. Uncomment the checkly block under[/prometheus/prometheus.yaml](https://github.com/LavenderFive/aptos-monitoring/blob/master/prometheus/prometheus.yml#L54) 
 2. Follow the steps outlined by [Checkly for Prometheus Integration](https://www.checklyhq.com/docs/integrations/prometheus/)
 
+---
+
 Navigate to `http://<host-ip>:3000` and login with user ***admin*** password ***admin***. You can change the credentials in the compose file or by supplying the `ADMIN_USER` and `ADMIN_PASSWORD` environment variables on compose up. The config file can be added directly in grafana part like this
 
 ```yaml
