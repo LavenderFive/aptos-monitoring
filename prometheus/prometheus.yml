@@ -1,0 +1,70 @@
+global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
+
+  # Attach these labels to any time series or alerts when communicating with
+  # external systems (federation, remote storage, Alertmanager).
+  external_labels:
+      monitor: 'docker-host-alpha'
+
+# Load and evaluate rules in this file every 'evaluation_interval' seconds.
+rule_files:
+  - "alert.rules"
+
+# A scrape configuration containing exactly one endpoint to scrape.
+scrape_configs:
+  - job_name: 'nodeexporter'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['nodeexporter:9100']
+
+  - job_name: 'cadvisor'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['cadvisor:8080']
+
+  - job_name: 'prometheus'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'pushgateway'
+    scrape_interval: 10s
+    honor_labels: true
+    static_configs:
+      - targets: ['pushgateway:9091']
+
+# These configs come from Rhinostake's Aptos Dashboard
+# https://github.com/RhinoStake/aptos_monitoring
+
+## Important Points:
+# • 9100 is prometheus-node-exporter, 9101 is the default APTOS metrics port.  Ensure these are available from the prometheus server.
+# • Add both your Validator and Validator Full Node IP addresses.  No need for additional tags.
+# • The 2109 port is for Caddy for measuring API statics for the dashboard (see below)
+  - job_name: aptos
+      static_configs:
+      - targets: ['val.preview.ip.addy.here:9100','val.preview.ip.addy.here:9101','valFullNode.preview.ip.addy.here:9100','valFullNode.preview.ip.addy.here:9101','valFullNode.preview.ip.addy.here:2019']
+          labels:
+          chain: 'preview'
+      - targets: ['val.mainnet.ip.addy.here:9100','val.mainnet.ip.addy.here:9101','valFullNode.mainnet.ip.addy.here:9100','valFullNode.mainnet.ip.addy.here:9101','valFullNode.mainnet.ip.addy.here:2019']
+          labels:
+          chain: 'mainnet'
+
+# Prometheus.yaml example for checklyhq integration
+  - job_name: aptos_checkly
+    metrics_path: "/accounts/<tenant_id>/prometheus/metrics"
+    bearer_token: "<token>"
+    scrape_interval: 15s
+    scheme: https
+    static_configs:
+      - targets: ["api.checklyhq.com"]
+
+# • The "checklyhq" component is for measurement & alerting through ChecklyHQ (https://www.checklyhq.com/)
+# • Read more about this integration here: https://www.checklyhq.com/docs/integrations/prometheus/
+
+alerting:
+  alertmanagers:
+  - scheme: http
+    static_configs:
+    - targets: 
+      - 'alertmanager:9093'
