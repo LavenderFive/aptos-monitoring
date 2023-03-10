@@ -3,14 +3,7 @@
 A monitoring solution for Aptos Node monitoring utilizing containers with [Prometheus](https://prometheus.io/), [Grafana](http://grafana.org/), [cAdvisor](https://github.com/google/cadvisor),
 [NodeExporter](https://github.com/prometheus/node_exporter) and alerting with [AlertManager](https://github.com/prometheus/alertmanager). 
 
-Thank you to the Rhino Stake team for their excellent dashboard! https://github.com/RhinoStake/aptos_monitoring
-
-## Setup
-
-### Grafana Dashboard
-This monitoring solution comes built in with Rhinostake's Aptos Monitoring dashboard, and 
-will require all of its setup to work. Grafana, Prometheus, and Infinity are installed 
-automatically.
+**Thank you to the Rhino Stake team for their [excellent dashboard](https://github.com/RhinoStake/aptos_monitoring)!**
 
 ## Install
 
@@ -44,10 +37,24 @@ Containers:
 
 ## Setup Grafana
 
+
+
+### Aptos Grafana Dashboard
+This monitoring solution comes built in with Rhinostake's Aptos Monitoring dashboard, and 
+will require all of its setup to work. Grafana, Prometheus, and Infinity are installed 
+automatically, but setting up the Prometheus jobs is still necessary. 
+
+#### 1. Create Persistent Storage
 To support persistent storage, you'll first need to create the volume:
 ```
 docker volume create grafana-storage
 ```
+#### 2. Prometheus Jobs
+Add your node endpoints under [/prometheus/prometheus.yaml](https://github.com/LavenderFive/aptos-monitoring/blob/master/prometheus/prometheus.yml#L46). 
+
+#### 3. Checkly Integation (optional)
+1. Uncomment the checkly block under[/prometheus/prometheus.yaml](https://github.com/LavenderFive/aptos-monitoring/blob/master/prometheus/prometheus.yml#L54) 
+2. Follow the steps outlined by [Checkly for Prometheus Integration](https://www.checklyhq.com/docs/integrations/prometheus/)
 
 Navigate to `http://<host-ip>:3000` and login with user ***admin*** password ***admin***. You can change the credentials in the compose file or by supplying the `ADMIN_USER` and `ADMIN_PASSWORD` environment variables on compose up. The config file can be added directly in grafana part like this
 
@@ -99,7 +106,7 @@ The Monitor Services Dashboard shows key metrics for monitoring the containers t
 Two alert groups have been setup within the [alert.rules](https://github.com/stefanprodan/dockprom/blob/master/prometheus/alert.rules) configuration file:
 
 * Monitoring services alerts [targets](https://github.com/stefanprodan/dockprom/blob/master/prometheus/alert.rules#L2-L11)
-* Aptos alerts [aptos]()
+* Aptos alerts [aptos](https://github.com/LavenderFive/aptos-monitoring/blob/master/prometheus/alert.rules#L2-L11)
 
 You can modify the alert rules and reload them by making a HTTP POST call to Prometheus:
 
@@ -121,6 +128,22 @@ Trigger an alert if any of the monitoring targets (node-exporter and cAdvisor) a
       summary: "Monitor service non-operational"
       description: "Service {{ $labels.instance }} is down."
 ```
+
+***Aptos alerts***
+
+Trigger an alert if any of the mainnet Aptos nodes fall out of sync for 30 seconds.
+
+```yaml
+  - alert: node_not_syncing
+  expr: avg(increase(aptos_state_sync_version{chain="mainnet", type="synced"}[30s])) < 1
+  for: 15s
+  labels:
+    severity: critical
+  annotations:
+    summary: "Aptos Node Not Syncing"
+    description: "Service {{ $labels.job }} {{ $labels.chain }} is not syncing."
+```
+
 
 ## Setup alerting
 

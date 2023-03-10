@@ -51,13 +51,13 @@ scrape_configs:
           chain: 'mainnet'
 
 # Prometheus.yaml example for checklyhq integration
-  - job_name: aptos_checkly
-    metrics_path: "/accounts/<tenant_id>/prometheus/metrics"
-    bearer_token: "<token>"
-    scrape_interval: 15s
-    scheme: https
-    static_configs:
-      - targets: ["api.checklyhq.com"]
+  # - job_name: aptos_checkly
+  #   metrics_path: "/accounts/<tenant_id>/prometheus/metrics"
+  #   bearer_token: "<token>"
+  #   scrape_interval: 15s
+  #   scheme: https
+  #   static_configs:
+  #     - targets: ["api.checklyhq.com"]
 
 # • The "checklyhq" component is for measurement & alerting through ChecklyHQ (https://www.checklyhq.com/)
 # • Read more about this integration here: https://www.checklyhq.com/docs/integrations/prometheus/

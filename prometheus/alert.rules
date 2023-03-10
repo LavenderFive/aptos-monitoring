@@ -2,7 +2,7 @@ groups:
 - name: aptos
   rules:
   - alert: node_not_syncing
-    expr: avg(increase(aptos_state_sync_version{chain="previewnet", type="synced"}[30s])) < 1
+    expr: avg(increase(aptos_state_sync_version{chain="mainnet", type="synced"}[30s])) < 1
     for: 15s
     labels:
       severity: critical
