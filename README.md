@@ -1,7 +1,7 @@
 # aptos-monitoring
 
-A monitoring solution for Aptos Node monitoring utilizing containers with [Prometheus](https://prometheus.io/), [Grafana](http://grafana.org/), [cAdvisor](https://github.com/google/cadvisor),
-[NodeExporter](https://github.com/prometheus/node_exporter) and alerting with [AlertManager](https://github.com/prometheus/alertmanager). 
+A monitoring solution for Aptos nodes utilizing docker containers with [Prometheus](https://prometheus.io/), [Grafana](http://grafana.org/), [cAdvisor](https://github.com/google/cadvisor),
+[NodeExporter](https://github.com/prometheus/node_exporter), and alerting with [AlertManager](https://github.com/prometheus/alertmanager). 
 
 **Thank you to the Rhino Stake team for their [excellent dashboard](https://github.com/RhinoStake/aptos_monitoring)!**
 
