@@ -43,12 +43,9 @@ scrape_configs:
 # • The 2109 port is for Caddy for measuring API statics for the dashboard (see below)
   - job_name: aptos
       static_configs:
-      - targets: ['val.preview.ip.addy.here:9100','val.preview.ip.addy.here:9101','valFullNode.preview.ip.addy.here:9100','valFullNode.preview.ip.addy.here:9101','valFullNode.preview.ip.addy.here:2019']
+        - targets: ['val.mainnet.ip.addy.here:9100','val.mainnet.ip.addy.here:9101','valFullNode.mainnet.ip.addy.here:9100','valFullNode.mainnet.ip.addy.here:9101','valFullNode.mainnet.ip.addy.here:2019']
           labels:
-          chain: 'preview'
-      - targets: ['val.mainnet.ip.addy.here:9100','val.mainnet.ip.addy.here:9101','valFullNode.mainnet.ip.addy.here:9100','valFullNode.mainnet.ip.addy.here:9101','valFullNode.mainnet.ip.addy.here:2019']
-          labels:
-          chain: 'mainnet'
+            chain: mainnet
 
 # Prometheus.yaml example for checklyhq integration
   # - job_name: aptos_checkly
