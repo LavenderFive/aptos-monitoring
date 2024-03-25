@@ -41,7 +41,7 @@ scrape_configs:
 # • 9100 is prometheus-node-exporter, 9101 is the default APTOS metrics port.  Ensure these are available from the prometheus server.
 # • Add both your Validator and Validator Full Node IP addresses.  No need for additional tags.
 # • The 2109 port is for Caddy for measuring API statics for the dashboard (see below)
-  - job_name: aptos
+  - job_name: 'aptos'
       static_configs:
       - targets: ['val.preview.ip.addy.here:9100','val.preview.ip.addy.here:9101','valFullNode.preview.ip.addy.here:9100','valFullNode.preview.ip.addy.here:9101','valFullNode.preview.ip.addy.here:2019']
           labels:
