@@ -1,22 +1,56 @@
 groups:
 - name: aptos
   rules:
-  - alert: node_not_syncing
-    expr: avg(increase(aptos_state_sync_version{chain="mainnet", type="synced"}[30s])) < 1
-    for: 15s
+  - alert: AptosDown
+    expr: up{job="aptos"} == 0
+    for: 3m
+    annotations:
+      title: 'Instance {{ $labels.instance }} down'
+      description: '{{ $labels.job }} on {{ $labels.instance }} has been down for more than 3 minutes'
+    labels:
+      severity: 'critical'
+  - alert: AptosNodeDown
+    expr: avg by(instance) (increase(aptos_state_sync_version{chain="mainnet", type="synced"}[1m])) < 1
+    for: 1m
     labels:
       severity: critical
+      job: aptos
     annotations:
-      summary: "Aptos Node Not Syncing"
-      description: "Service {{ $labels.job }} {{ $labels.chain }} is not syncing."
-
-- name: targets
-  rules:
-  - alert: monitor_service_down
-    expr: up == 0
-    for: 30s
+      summary: "Aptos Node Down"
+      description: "Service {{ $labels.instance }} is not syncing."
+  - alert: AptosInstanceDown
+    expr: up{job="aptos"} == 0
+    for: 1m
     labels:
       severity: critical
+      job: aptos
     annotations:
-      summary: "Monitor service non-operational"
-      description: "Service {{ $labels.instance }} is down."
+      title: 'Instance {{ $labels.instance }} down'
+      description: '{{ $labels.job }} on {{ $labels.instance }} has been down for more than 3 minutes'
+  - alert: AptosValidatorDown
+    expr: avg (increase(aptos_state_sync_version{chain="mainnet"}[1m])) < 1
+    for: 1m
+    labels:
+      severity: critical
+      job: aptos
+    annotations:
+      summary: "Aptos Validator Down"
+      description: "Service {{ $labels.instance }} is not syncing."
+  - alert: AptosVFNDown
+    expr: avg(increase(aptos_state_sync_version{chain="mainnet"}[1m])) < 1
+    for: 1m
+    labels:
+      severity: warning
+      job: aptos
+    annotations:
+      summary: "Aptos VFN Down"
+      description: "Service {{ $labels.instance }} is not syncing."
+  - alert: AptosBackupDown
+    expr: avg(increase(aptos_state_sync_version{chain="mainnet"}[1m])) < 1
+    for: 1m
+    labels:
+      severity: warning
+      job: aptos
+    annotations:
+      summary: "Aptos VFN Down"
+      description: "Service {{ $labels.instance }} is not syncing."
